@@ -24,11 +24,5 @@ abstract class BaseTransaction
 
    
 
-    /**
-     * Get the value of amount
-     */ 
-    public function getAmount()
-    {
-        return $this->amount;
-    }
+    
 }

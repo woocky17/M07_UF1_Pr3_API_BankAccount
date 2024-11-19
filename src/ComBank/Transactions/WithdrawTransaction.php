@@ -20,6 +20,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
     public function applyTransaction(BankAccount $balance): float
     {
         if ((($balance->getOverdraft()->getOverdraftFundsAmount() + ($balance->getBalance())) - ($this->amount)) >= 0) {
+            
             return ($balance->getBalance() - $this->amount);
         }
         throw new InvalidOverdraftFundsException("failed transaction due to overdraft ");
@@ -27,5 +28,9 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
 
     public function getTransactionInfo (): String {
         return "WITHDRAW_TRANSACTION";
+    }
+
+    public function getAmount(): float {
+        return $this->amount;
     }
 }
