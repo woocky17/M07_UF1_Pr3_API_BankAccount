@@ -22,7 +22,7 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Bank\Person\Person;
 use ComBank\Bank\NationalBankAccount;
 use ComBank\Bank\InternationalBankAccount;
-use PhpParser\Node\Stmt\Echo_;
+use ComBank\Support\Traits\ApiTrait;
 
 require_once 'bootstrap.php';
 
@@ -165,7 +165,7 @@ $bankAccount6 = new InternationalBankAccount(500.0, $person2);
 
 
 
-
+echo "<br>";
 
 $bankAccount7 = new NationalBankAccount(10000.0);
 
@@ -180,12 +180,6 @@ $bankAccount7->transaction (new WithdrawTransaction(1500));
 pl('My new balance after withdraw (-1500) : ' . $bankAccount7->getBalance());
 
 
-
-
-
-
-
-
 $bankAccount8 = new InternationalBankAccount(10000.0);
 
 pl('--------- [Start testing international account (No Fraud Deposit)] --------');
@@ -198,3 +192,37 @@ pl('--------- [Start testing international account (Fraud Withdraw)] --------');
 echo "My balance: ". $bankAccount8->getBalance();
 $bankAccount8->transaction (new WithdrawTransaction(7000));
 pl('My new balance after deposit (-7000) : ' . $bankAccount8->getBalance());
+
+
+echo "<br>";
+pl("--------- [Start testing buy Bitcoin (insuficiente balance)] --------");
+
+echo "Precio de 1 bitcoin: ". $bankAccount8->PriceBitcoins();
+$bankAccount8->buyBitcoin(1);
+echo "<br>";
+echo "My balance: ". $bankAccount8->getBalance();
+echo "<br>";
+
+pl("--------- [Start testing buy Bitcoin (balance suficiente)] --------");
+
+echo "Precio de 1 bitcoin: ". $bankAccount8->PriceBitcoins();
+$bankAccount8->buyBitcoin(0.01);
+echo "<br>";
+echo "My balance: ". $bankAccount8->getBalance();
+echo "<br>";
+
+pl("--------- [Start testing sell Bitcoin (insuficiente balance)] --------");
+echo "Precio de 1 bitcoin: ". $bankAccount8->PriceBitcoins();
+$bankAccount8->sellBitcoin(1);
+echo "<br>";
+echo "My balance: ". $bankAccount8->getBalance();
+echo "<br>";
+
+
+
+pl("--------- [Start testing sell Bitcoin (balance suficiente)] --------");
+echo "Precio de 1 bitcoin: ". $bankAccount8->PriceBitcoins();
+$bankAccount8->sellBitcoin(0.01);
+echo "<br>";
+echo "My balance: ". $bankAccount8->getBalance();
+echo "<br>";

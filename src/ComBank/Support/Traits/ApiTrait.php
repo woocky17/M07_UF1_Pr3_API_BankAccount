@@ -89,9 +89,32 @@ trait ApiTrait
 
     /**
      * Get the value of risk
-     */ 
+     */
     public function getRisk()
     {
         return $this->risk;
     }
+
+
+    public function PriceBitcoins(): float
+    {
+
+        $ch = curl_init();
+
+        $api = "https://api.coindesk.com/v1/bpi/currentprice/EUR.json";
+        curl_setopt($ch, CURLOPT_URL, $api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($result, true);
+
+        if (isset($data['bpi']['EUR']['rate_float'])) {
+            return round($data['bpi']['EUR']['rate_float'],2);
+        } else {
+            return 0.0;
+        }
+    }
+
 }

@@ -22,7 +22,5 @@ abstract class BaseTransaction
         $this->amount = $amount;
     }
 
-   
-
     
 }

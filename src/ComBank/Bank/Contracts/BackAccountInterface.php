@@ -24,4 +24,6 @@ interface BackAccountInterface
     public function setBalance(float $balance): void;
     public function getOverdraft(): OverdraftInterface;
     public function applyOverdraft(OverdraftInterface $overdraft): void;
+    public function getBitcoin();
+
 }

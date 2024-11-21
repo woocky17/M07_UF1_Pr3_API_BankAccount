@@ -31,6 +31,7 @@ class BankAccount implements BackAccountInterface
     protected string $status;
     protected OverdraftInterface  $overdraft;
     protected string $currency;
+    protected float $bitcoin;
 
     public function __construct(float $balance, Person $person = null, OverdraftInterface $overdraft = null, string $currency = " € (Euro)")
     {
@@ -39,6 +40,7 @@ class BankAccount implements BackAccountInterface
         $this->currency = $currency;
         $this->overdraft = $overdraft ?? new NoOverdraft();
         $this->person = $person;
+        $this->bitcoin = 0.0;
     }
 
     public function transaction(BankTransactionInterface $transaction): void
@@ -52,12 +54,12 @@ class BankAccount implements BackAccountInterface
                     echo "<br>";
                     echo "Allow";
                     echo "<br>";
-                    echo $this->getRisk();
-                }else {
+                    echo "Risk: " . $this->getRisk();
+                } else {
                     echo "<br>";
                     echo "Blocked";
                     echo "<br>";
-                    echo $this->getRisk();
+                    echo "Risk: " . $this->getRisk();
                 }
             } catch (InvalidOverdraftFundsException $e) {
                 throw new FailedTransactionException("");
@@ -99,7 +101,7 @@ class BankAccount implements BackAccountInterface
 
     public function getBalance(): float
     {
-        return $this->balance;
+        return round($this->balance,2);
     }
 
     public function setBalance(float $balance): void
@@ -131,5 +133,55 @@ class BankAccount implements BackAccountInterface
     public function getPerson()
     {
         return $this->person;
+    }
+
+
+    public function buyBitcoin(float $amountBitcoin)
+    {
+        $bitcoin = $this->PriceBitcoins() * $amountBitcoin;
+
+        if (!($this->getBalance() - $bitcoin <= 0)) {
+            $this->setBalance($this->getBalance() - $bitcoin);
+            $this->setBitcoin($amountBitcoin);
+            echo "<br>";
+            echo "Has comprado " . $this->getBitcoin() . " bitcoins";
+        } else {
+            echo "<br>";
+            echo "No tienes suficiente balance para comprar " . $amountBitcoin . " bitcoins";
+        }
+    }
+    public function sellBitcoin(float $amountBitcoin)
+    {
+
+        if (!($this->getBitcoin() - $amountBitcoin < 0)) {
+            $bitcoin = $this->PriceBitcoins() * $amountBitcoin;
+            $this->setBalance($this->getBalance() + $bitcoin);
+            $this->setBitcoin($this->getBitcoin() - $amountBitcoin);
+            echo "<br>";
+            echo "Has vendido " . $amountBitcoin . " bitcoins";
+        } else {
+            echo "<br>";
+            echo "No tienes suficientes bitcoins para vender";
+        }
+    }
+
+    /**
+     * Get the value of bitcoin
+     */
+    public function getBitcoin()
+    {
+        return $this->bitcoin;
+    }
+
+    /**
+     * Set the value of bitcoin
+     *
+     * @return  self
+     */
+    public function setBitcoin($bitcoin)
+    {
+        $this->bitcoin = $bitcoin;
+
+        return $this;
     }
 }
